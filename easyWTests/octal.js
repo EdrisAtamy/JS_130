@@ -1,19 +1,14 @@
 class Octal {
   constructor(string) {
-    this.octal = string;
-  }
-
-  validOctal() {
-    return this.octal.split('').every(char => char.match(/[0-7]/));
+    this.octalStr = string;
   }
 
   toDecimal() {
-    if (!this.validOctal()) return 0;
-    let numArr = this.octal.split('').map(number => Number(number));
+    if (!this.octalStr.split('').every(num => num.match(/[0-7]/))) return 0;
+    let octalArr = this.octalStr.split('').map(num => Number(num)).reverse();
 
-    return numArr.reduce(function(acc, number, index) {
-      acc += (number * (8**(numArr.length - (index + 1))));
-      return acc;
+    return octalArr.reduce(function(decimal, currNum, pow) {
+      return decimal + (currNum * (8**pow));
     }, 0);
   }
 }
