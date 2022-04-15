@@ -1,80 +1,92 @@
 class SimpleLinkedList {
-  static fromArray(arr) { // creates a new list
-    arr = arr || [];
-    
-    let list = new SimpleLinkedList();
-    [...arr].reverse().forEach(element => list.push(element));
-    
-    return list;
+  static fromArray(arr) {
+    if (!Array.isArray(arr)) return new SimpleLinkedList();
+    let newList = new SimpleLinkedList();
+    [...arr].reverse().forEach(function(value) {
+      newList.push(value);
+    })
+    return newList;
   }
   
-  toArray() { // convert the list to an array
-    let arr = [];
+  toArray() {
+    if (this.isEmpty()) return [];
+    let listArr = [];
+    let tempEl = this.head();
     
-    let currEl = this.head();
-    while (currEl !== null) {
-      arr.push(currEl.datum());
-      currEl = currEl.next();
+    while (tempEl !== null) {
+      listArr.push(tempEl.datum());
+      tempEl = tempEl.next();
     }
+    return listArr;
+  }
+  
+  size() {
+    let size = 0;
+    let tempEl = this.head();
     
-    return arr;
+    while (tempEl) {
+      size += 1;
+      tempEl = tempEl.next();
+    }
+    return size;
   }
   
-  push(value) { // adds argument to list
-    let newEl = new Element(value, this.head());
-    this.headEl = newEl;
+  isEmpty() { // returns TRUE if empty - FALSE if not
+    return this.head() === undefined;
   }
   
-  pop() { // removes HEAD of list
-    let tempHead = this.head();
-    this.headEl = this.headEl.nextEl;
-    return tempHead.datum();
+  peek() { // returns the VALUE of the HEAD element
+    return this.isEmpty() ? null : this.head().datum();
   }
   
-  peek() { // returns the datum of the HEAD element
-    return this.headEl ? this.headEl.datum() : null;
+  head() { // returns head ELEMENT
+    return this.headEl;
   }
   
-  head() { // returns the HEAD element object from the list
-    return this.headEl || null;
+  push(value) {
+    let newEl = new Element(value);
+    if (this.headEl === undefined) {
+      this.headEl = newEl;
+    } else {
+      newEl.nextEl = this.head();
+      this.headEl = newEl;
+    }
   }
   
-  size() { // return the size of the list
-    return this.toArray().length;
+  pop() { // removes the HEAD element
+    let tempElDatum = this.headEl.datum();
+    this.headEl = this.headEl.next();
+    return tempElDatum;
   }
   
-  isEmpty() { // returns bool value of whether list is empty or not
-    return this.toArray().length > 0 ? false : true;
-  }
-  
-  reverse() { // reverse the list
+  reverse() { // reverses the LIST - not the array
     let tempList = new SimpleLinkedList();
-    let currEl = this.head();
+    let tempEl = this.head();
     
-    while (currEl !== null) {
-      tempList.push(currEl.datum());
-      currEl = currEl.next();
+    while (tempEl !== null) {
+      tempList.push(tempEl.datum());
+      tempEl = tempEl.next();
     }
-    
-    return tempList;
+    this.headEl = tempList.head();
+    return this;
   }
 }
 
 class Element {
-  constructor(data, elementObj = null) { // create a new element object
-    this.data = data;
-    this.nextEl = elementObj;
+  constructor(value, nextVal = null) {
+    this.data = value;
+    this.nextEl = nextVal;
   }
   
-  datum() { // return the current value of the element instance
+  datum() {
     return this.data;
   }
   
-  isTail() { // returns bool value of whether the element is the last in list
-    return this.nextEl === null;
+  isTail() {
+    return this.next() === null;
   }
   
-  next() { // returns null if the element is tail, else return the next element
+  next() {
     return this.nextEl;
   }
 }
